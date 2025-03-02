@@ -1,0 +1,50 @@
+
+@if( productData !==null ){
+    <section class="my-5 ">
+        <h1 class="capitalize text-2xl text-green-700 font-medium text-center mt-5" >product details</h1>
+        <div class="grid grid-cols-12 gap-10 items-center " >
+            <div class=" col-span-3 ">
+                <h5 class="text-xl font-mono text-rose-400 text-center " > {{productData.category.name}} </h5>
+                
+
+                <owl-carousel-o [options]="customOptions">
+
+                    @for (item of productData.images ; track $index) {
+                        <ng-template carouselSlide >
+                            <img [src]="item" class="w-full"  alt="image">
+
+                          </ng-template>
+                    }
+                </owl-carousel-o>
+
+            </div>
+            
+            <div class="col-span-9">
+                <h2 class="text-xl font-bold py-5 " > {{productData.title}} </h2>
+                <p class="text-md text-gray-900/50 " > {{productData.description}} </p>
+                <div class="flex justify-between items-center py-6">
+                    <span> {{productData.price}} EGP </span>
+                    <div>
+                        @for (num of [1,2,3,4,5].slice(0,productData.ratingsAverage) ; track $index) {
+                            <span class=""><i class="fas fa-star text-yellow-400"></i></span>
+                        }
+                        @if (productData.ratingsAverage %1 !==0) {
+                            <span class=""><i class="fas fa-star-half-stroke text-yellow-400"></i>  </span>
+                        }
+                        {{productData.ratingsAverage}}
+    
+                    </div>
+                </div>
+                <button (click)="addProductToCart(productData._id)"  class=" animate-bounce mb-1  bg-red-600 text-white border rounded py-1 w-2/3  mx-auto block md:w-[80%]  hover:bg-yellow-400 transition-all duration-300 group" >
+                    <span class=" group-hover:hidden transition-all duration-500 "> Add to cart</span>
+                     <i class="fa-solid fa-cart-plus group-hover:text-black"></i>
+                 </button>
+        
+            </div>
+    
+            
+            
+        </div>
+    </section>
+}
+

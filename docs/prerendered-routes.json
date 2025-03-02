@@ -1,0 +1,14 @@
+{
+  "routes": {
+    "/frshCartApp": {},
+    "/frshCartApp/allorders": {},
+    "/frshCartApp/brands": {},
+    "/frshCartApp/cart": {},
+    "/frshCartApp/categorise": {},
+    "/frshCartApp/home": {},
+    "/frshCartApp/login": {},
+    "/frshCartApp/products": {},
+    "/frshCartApp/register": {},
+    "/frshCartApp/resetpass": {}
+  }
+}

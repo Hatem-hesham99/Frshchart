@@ -1,0 +1,41 @@
+
+@if(products){
+    
+<section class="py-10 selection:bg-red-600 selection:text-white" >
+    <h2  class=" capitalize text-3xl pb-6 text-red-600 " >All products</h2>
+    <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-10">
+       @for (product of products; track product._id) {
+        <div class="card  border border-green-400/50 shadow rounded-md overflow-hidden relative md:hover:scale-110 transition-all duration-500 ">
+         
+            <div role="button" [routerLink]="['/details',product.slug, product._id]" >
+                
+            <div class="imgCard  px-2 ">
+                <img [src]="product.imageCover" class="w-full h-[250px] object-contain " [alt]="product.title">
+            </div>
+            <div class="bodyCard px-2 py-4 ms-5 md:ms-0"  >
+                <h4 class="text-xs text-red-600 " > {{product.category.name}} </h4>
+                <h3 class="font-medium"> {{product.title.split(' ',2).join(" ")}} </h3>
+                <div class=" flex justify-between items-center ">
+                    <span class="hover:text-red-600 transition-all duration-300"> {{product.price}} EGP</span>
+                    <div class="flex items-center ">
+                        <i class="fas fa-star text-yellow-400" ></i>
+                        <span class="text-gray-400  " > {{product.ratingsAverage}} </span>
+                    </div>
+
+                </div>
+            </div>
+            </div>
+
+
+            <button (click)="addProductToCart(product._id)"  class=" mb-1  bg-red-600 text-white border rounded py-1 w-2/5 mx-auto block  md:w-full hover:bg-yellow-400 transition-all duration-300 group" >
+               <span class=" group-hover:hidden transition-all duration-500 "> Add to cart</span>
+                <i class="fa-solid fa-cart-plus group-hover:text-black"></i>
+            </button>
+
+        </div>
+       }
+
+    </div>
+</section>
+}
+

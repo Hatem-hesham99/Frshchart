@@ -1,0 +1,31 @@
+{
+    "navbar": {
+        "home": "Home",
+        "products": "Products",
+        "categorise": "Categories",
+        "brands": "Brands",
+        "logout": "Logout",
+        "login": "Login",
+        "register": "Register",
+        "lang": "lang"
+    },
+    "loginPage": {
+        "loginNow": "Login Now",
+        "email": "Email",
+        "password": "Password",
+        "login": "Login",
+        "resetPassword": "Reset Password"
+    },
+    "registerPage": {
+        "registerTitle": "Register Now",
+        "name": "Name",
+        "email": "Email",
+        "password": "Password",
+        "rePassword": "Confirm Password",
+        "phone": "Phone",
+        "signup": "Sign Up"
+    }
+}
+
+
+

@@ -1,0 +1,28 @@
+<section class="my-5 ">
+  <h1 class="text-center text-green-500 text-3xl py-7">All Categories</h1>
+
+  <div class=" grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-10 ">
+    @for (cate of categoryData ; track cate._id ) {
+
+    <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+      <a >
+        <img class="rounded-t-lg h-48 w-full object-contain border-b" [src]="cate.image" [alt]=" cate.slug " />
+      </a>
+      <div class="p-5">
+        <a >
+          <h1 class="mb-2 text-2xl font-light text-green-500 ">
+            {{cate.slug}}
+          </h1>
+          <h5 class="mb-2 text-2xl font-bold  ">
+             {{cate.name}}
+          </h5>
+        </a>
+
+      </div>
+    </div>
+
+    }
+
+
+  </div>
+</section>
