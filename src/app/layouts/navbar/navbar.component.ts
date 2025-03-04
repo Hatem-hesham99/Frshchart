@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -14,6 +14,7 @@ import { CartService } from '../../core/services/cart/cart.service';
 export class NavbarComponent implements OnInit {
 
 
+  isnavToggle:boolean = true
 
   private readonly mytranslateService = inject(MytranslateService) 
   private readonly cartService = inject(CartService) 
@@ -46,6 +47,12 @@ export class NavbarComponent implements OnInit {
   change( lang:string ):void{
     this.mytranslateService.changmylanguage(lang)
   }
+
+
+  toggel(){
+   this.isnavToggle = !this.isnavToggle
+  }
+
 
 
 }

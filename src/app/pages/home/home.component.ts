@@ -1,5 +1,5 @@
 import { CartService } from './../../core/services/cart/cart.service';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ProductService } from '../../core/services/product/product.service';
 import { Iproduct } from '../../shared/interfaces/iproduct';
 import { CategoryService } from '../../core/services/category/gategory.service';
@@ -7,6 +7,7 @@ import { Icategory } from '../../shared/interfaces/icategory';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -14,9 +15,13 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit ,OnDestroy{
 
 
+   cancelProduct!:Subscription
+    cancelCategory!:Subscription
+    cancelAddCart!:Subscription
+  
 
 
   products: Iproduct[] = []
@@ -35,7 +40,7 @@ export class HomeComponent implements OnInit {
 
 
   getProductsData() {
-    this.productService.getAllProducts().subscribe({
+   this.cancelProduct= this.productService.getAllProducts().subscribe({
 
       next: (res) => {
         // console.log(res.data)
@@ -50,7 +55,7 @@ export class HomeComponent implements OnInit {
 
 
   getGategoryData() {
-    this.gategoryService.getCategory().subscribe({
+   this.cancelCategory=  this.gategoryService.getCategory().subscribe({
       next: (res) => {
         this.categories = res.data
       },
@@ -64,7 +69,7 @@ export class HomeComponent implements OnInit {
   
 
   addProductToCart(id:string){
-      this.cartService.addToCart(id).subscribe({
+    this.cancelAddCart=  this.cartService.addToCart(id).subscribe({
         next:(res)=>{
           console.log(res);
           if(res.status === "success" ){
@@ -130,7 +135,11 @@ export class HomeComponent implements OnInit {
 
 
 
-
+  ngOnDestroy(): void {
+    this.cancelProduct.unsubscribe()
+    this.cancelCategory.unsubscribe()
+    this.cancelAddCart.unsubscribe()
+  }
 
 
 

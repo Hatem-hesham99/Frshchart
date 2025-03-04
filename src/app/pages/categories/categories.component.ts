@@ -1,6 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CategoryService } from '../../core/services/category/gategory.service';
 import { Icategory } from '../../shared/interfaces/icategory';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-categories',
@@ -8,9 +9,10 @@ import { Icategory } from '../../shared/interfaces/icategory';
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.css'
 })
-export class CategoriesComponent implements OnInit {
+export class CategoriesComponent implements OnInit ,OnDestroy {
 
   categoryData:Icategory[] = []
+  cancelCategory!:Subscription
 
   private readonly categoryService=inject(CategoryService)
 
@@ -19,7 +21,7 @@ export class CategoriesComponent implements OnInit {
   }
 
   getAllCategories(){
-    this.categoryService.getCategory().subscribe({
+    this.cancelCategory= this.categoryService.getCategory().subscribe({
       next:(res)=>{
         console.log(res);
         this.categoryData = res.data
@@ -28,4 +30,7 @@ export class CategoriesComponent implements OnInit {
     })
   }
 
+  ngOnDestroy(): void {
+    this.cancelCategory.unsubscribe()
+  }
 }

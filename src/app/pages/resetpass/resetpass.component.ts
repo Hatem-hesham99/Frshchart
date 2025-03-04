@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-resetpass',
@@ -10,8 +11,11 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './resetpass.component.html',
   styleUrl: './resetpass.component.css'
 })
-export class ResetpassComponent {
+export class ResetpassComponent implements OnDestroy {
 
+  cancelGet!:Subscription
+  cancelverfiy!:Subscription
+  cancelRest!:Subscription
   step:number=1;
   isloading:boolean = false;
   errormassage:string = ''
@@ -28,7 +32,7 @@ export class ResetpassComponent {
       // set value email to step 3 ==>
        this.resetPassword.get('email')?.patchValue( this.forgetPassword.get('email')?.value)  
       this.isloading = true
-      this.authService.forgotPassAPI(this.forgetPassword.value).subscribe({
+      this.cancelGet=  this.authService.forgotPassAPI(this.forgetPassword.value).subscribe({
         next:(res)=>{
           console.log(res);
            if(res.statusMsg == 'success'){
@@ -55,7 +59,7 @@ export class ResetpassComponent {
   getverifyCode(){
     if(this.verifyCode.valid){
       this.isloading = true
-      this.authService.verifyCodeAPI(this.verifyCode.value).subscribe({
+      this.cancelverfiy=  this.authService.verifyCodeAPI(this.verifyCode.value).subscribe({
         next:(res)=>{
           console.log(res);
           if(res.status =='Success'){
@@ -83,7 +87,7 @@ export class ResetpassComponent {
   })
   getresetPassword(){
     if(this.resetPassword.valid){
-      this.authService.resetPassAPI(this.resetPassword.value).subscribe({
+      this.cancelRest= this.authService.resetPassAPI(this.resetPassword.value).subscribe({
         next:(res)=>{
           localStorage.setItem('token', res.token )
           this.authService.saveUserData()
@@ -97,4 +101,13 @@ export class ResetpassComponent {
     }
    
   }
+
+
+  ngOnDestroy(): void {
+    this.cancelGet.unsubscribe()
+    this.cancelverfiy.unsubscribe()
+    this.cancelRest.unsubscribe()
+
+  }
+
 }

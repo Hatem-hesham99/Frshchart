@@ -1,10 +1,11 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CartService } from '../../core/services/cart/cart.service';
 import { Icart } from '../../shared/interfaces/icart';
 import { CurrencyPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import Swal from 'sweetalert2'
 import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-cart',
@@ -12,9 +13,13 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
 })
-export class CartComponent implements OnInit {
+export class CartComponent implements OnInit,OnDestroy {
 
   cartData:Icart = {} as Icart
+  cancelCart !: Subscription
+  cancelRemove !: Subscription
+  cancelUpdate !: Subscription
+  cancelClear !: Subscription
   private readonly cartService= inject(CartService)
   private readonly toastrService = inject(ToastrService)
 
@@ -23,7 +28,7 @@ export class CartComponent implements OnInit {
   }
 
   getCarttData(){
-    this.cartService.getLoggedUserCart().subscribe({
+    this.cancelCart= this.cartService.getLoggedUserCart().subscribe({
       next:({data})=>{
         this.cartData = data
         console.log(data);  
@@ -34,8 +39,9 @@ export class CartComponent implements OnInit {
       }
     })
   }
+
   removeProductFromCart(id:string){
-    this.cartService.RemovespecificcartItem(id).subscribe({
+   this.cancelRemove= this.cartService.RemovespecificcartItem(id).subscribe({
       next:(res)=>{
         console.log(res);
         this.toastrService.error('Delet This Product Done' , 'Delet Product')
@@ -50,8 +56,9 @@ export class CartComponent implements OnInit {
       }
     })
   }
+
   UpdatecartproductNumber(id:string,count:number){
-    this.cartService.Updatecartproductquantity(id,count).subscribe({
+  this.cancelUpdate=  this.cartService.Updatecartproductquantity(id,count).subscribe({
       next:({data})=>{
         console.log(data);
         this.cartData = data
@@ -65,7 +72,6 @@ export class CartComponent implements OnInit {
   }
 
   clearCart(){
-
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -77,7 +83,7 @@ export class CartComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
 
-        this.cartService.Clearusercart().subscribe({
+       this.cancelClear=  this.cartService.Clearusercart().subscribe({
           next:(res)=>{
             console.log(res);
             this.cartService.cartNumber.next(0)
@@ -104,6 +110,13 @@ export class CartComponent implements OnInit {
 
 
    
+  }
+
+  ngOnDestroy(): void {
+    this.cancelCart.unsubscribe()
+    this.cancelRemove.unsubscribe()
+    this.cancelUpdate.unsubscribe()
+    this.cancelClear.unsubscribe()
   }
 
 }

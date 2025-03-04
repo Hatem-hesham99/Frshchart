@@ -1,15 +1,16 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { AuthService } from '../../core/services/auth/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-login',
   imports: [ReactiveFormsModule,RouterLink,TranslatePipe ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent {
+export class LoginComponent implements OnDestroy{
 
 
   
@@ -18,6 +19,7 @@ export class LoginComponent {
     private readonly formBuilder =inject(FormBuilder)
     isloading:boolean=false;
     errorMessage:string=''
+    cancelLogin!:Subscription
   
     login:FormGroup = this.formBuilder.group({
         email:[null,[Validators.required,Validators.email]],
@@ -41,7 +43,7 @@ export class LoginComponent {
     submitForm(){
       if(this.login.valid){
         this.isloading = true
-          this.authService.loginForm(this.login.value).subscribe({
+        this.cancelLogin=  this.authService.loginForm(this.login.value).subscribe({
             next:(res)=>{
               if( res.message =="success"){
                 //console.log(res)
@@ -70,7 +72,9 @@ export class LoginComponent {
       
      }
   
-  
+     ngOnDestroy(): void {
+      this.cancelLogin.unsubscribe()
+     }
 
 
 }

@@ -1,16 +1,17 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { AuthService } from '../../core/services/auth/auth.service';
 import { Router } from '@angular/router';
 import { group } from 'node:console';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-register',
   imports: [ ReactiveFormsModule, TranslatePipe ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnDestroy {
 
  
 
@@ -19,6 +20,7 @@ export class RegisterComponent {
   
   isloading:boolean=false;
   errorMessage:string=''
+  cancelRegister!:Subscription
 
   //---new syntacs----- 
   private readonly x = inject(FormBuilder)
@@ -63,7 +65,7 @@ export class RegisterComponent {
   submitForm(){
     if(this.register.valid){
       this.isloading = true
-        this.authService.registerForm(this.register.value).subscribe({
+      this.cancelRegister= this.authService.registerForm(this.register.value).subscribe({
           next:(res)=>{
             if( res.message =="success"){
             this.errorMessage = res.message
@@ -87,5 +89,8 @@ export class RegisterComponent {
    }
 
 
+   ngOnDestroy(): void {
+     this.cancelRegister.unsubscribe()
+   }
 
 }

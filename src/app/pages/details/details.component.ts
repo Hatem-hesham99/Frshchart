@@ -1,10 +1,11 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, CanActivateFn } from '@angular/router';
 import { ProductService } from '../../core/services/product/product.service';
 import { Iproduct } from '../../shared/interfaces/iproduct';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { CartService } from '../../core/services/cart/cart.service';
 import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-details',
@@ -12,10 +13,13 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './details.component.html',
   styleUrl: './details.component.css'
 })
-export class DetailsComponent implements OnInit {
+export class DetailsComponent implements OnInit ,OnDestroy{
 
  // productId:string ='';
   productData:Iproduct|null = null;
+
+  cancelProduct!:Subscription
+  cancelAddProduct!:Subscription
 
   constructor( private activatedRoute:ActivatedRoute ){}
   private readonly productService = inject(ProductService)
@@ -27,7 +31,7 @@ export class DetailsComponent implements OnInit {
   }
 
   getProduct(){
-    this.activatedRoute.paramMap.subscribe({
+  this.cancelProduct=  this.activatedRoute.paramMap.subscribe({
       next:(p)=>{
         console.log(p.get('id'));
         const productId = p.get('id')!
@@ -44,7 +48,7 @@ export class DetailsComponent implements OnInit {
 
   
   addProductToCart(id:string){
-    this.cartService.addToCart(id).subscribe({
+   this.cancelAddProduct= this.cartService.addToCart(id).subscribe({
       next:(res)=>{
         console.log(res);
         if(res.status === "success" ){
@@ -95,5 +99,10 @@ export class DetailsComponent implements OnInit {
     }
   
 
+
+    ngOnDestroy(): void {
+      this.cancelProduct.unsubscribe()
+      this.cancelAddProduct.unsubscribe()
+    }
 
 }

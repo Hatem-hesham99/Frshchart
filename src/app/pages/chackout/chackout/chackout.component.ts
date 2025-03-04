@@ -1,5 +1,6 @@
+import { subscribeOn, Subscription } from 'rxjs';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrdersService } from '../../../core/services/orders/orders.service';
 import { open } from 'fs';
@@ -10,8 +11,11 @@ import { open } from 'fs';
   templateUrl: './chackout.component.html',
   styleUrl: './chackout.component.css'
 })
-export class ChackoutComponent implements OnInit {
+export class ChackoutComponent implements OnInit,OnDestroy {
 
+  cancelCard!:Subscription
+  cancelFeza!:Subscription
+  cancelcach!:Subscription
   
 
   private readonly formBuilder=inject(FormBuilder)
@@ -34,7 +38,7 @@ export class ChackoutComponent implements OnInit {
   }
 
   getIdCard(){
-    this.activatedRoute.paramMap.subscribe({
+   this.cancelCard= this.activatedRoute.paramMap.subscribe({
       next:(p)=>{
         console.log(p.get('id'));
         
@@ -46,7 +50,7 @@ export class ChackoutComponent implements OnInit {
   paymantFeza(){
     if(this.paymantForm.valid){
 
-      this.ordersService.CheckoutSession(this.idCard,this.paymantForm.value).subscribe({
+    this.cancelFeza=  this.ordersService.CheckoutSession(this.idCard,this.paymantForm.value).subscribe({
         next:(res)=>{
           console.log(res);
           if(res.status == 'success'){
@@ -68,7 +72,7 @@ export class ChackoutComponent implements OnInit {
   paymantCach(){
     if(this.paymantForm.valid){
 
-      this.ordersService.CheckoutCash(this.idCard,this.paymantForm.value).subscribe({
+     this.cancelcach= this.ordersService.CheckoutCash(this.idCard,this.paymantForm.value).subscribe({
         next:(res)=>{
           console.log(res);
           if(res.status=='success'){
@@ -86,5 +90,10 @@ export class ChackoutComponent implements OnInit {
     
   }
 
+  ngOnDestroy(): void {
+    this.cancelCard.unsubscribe()
+    this.cancelFeza.unsubscribe()
+    this.cancelcach.unsubscribe()
+  }
 
 }
